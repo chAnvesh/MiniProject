@@ -4,17 +4,25 @@ import java.util.Scanner;
 
 import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.exception.BankingException;
+import com.cg.onlineBanking.service.BankingService;
+import com.cg.onlineBanking.service.IBankingService;
 import com.cg.onlineBanking.service.IUserService;
 import com.cg.onlineBanking.service.UserService;
 
 public class NewUI {
-public static boolean stat;
+
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		
 		int userId =0;
 		String password;
-		IUserService userService = new UserService(); 
+		IBankingService bankService=null;
+		try {
+			bankService=new BankingService();
+		} catch (BankingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
 		int loginAttempts=0;
 		
 		
@@ -57,7 +65,7 @@ public static boolean stat;
 					flagAdmin = false;
 					try {
 						
-						resultUser= userService.validateCredentials(user);
+						resultUser= bankService.validateCredentials(user);
 						if(resultUser.getUserId()==0){
 							flagu=false;
 							flagUser=flagu&&flagp;
@@ -91,19 +99,5 @@ public static boolean stat;
 				}
 				//System.out.println(flag);
 			}while(!flag);
-				
-			/*if(flag){
-				AdminConsole aConsole = new AdminConsole();
-				aConsole.start();
-			}else if(!flag&&flagu&&flagp)
-			{
-				UserConsole uConsole = new UserConsole(resultUser);
-				uConsole.start();
-			}
-			else{
-				System.out.println("Application stopped");
-			}*/
-			
-	}
-	
+				}
 }

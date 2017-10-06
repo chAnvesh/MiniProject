@@ -9,11 +9,6 @@ import com.cg.onlineBanking.exception.BankingException;
 
 public interface IUserDAO {
 
-	//public UserBean validateUser(int userId) throws BankingException;
-	public ArrayList getUserIdList()  throws BankingException;
-	//public ArrayList validateUserPassword()  throws BankingException;
-	public UserBean getUserDetailsOnId(int userId) throws BankingException;
-	
 	//change password
 	public boolean changePassword(String password, int userId) throws BankingException;
 	
@@ -24,5 +19,10 @@ public interface IUserDAO {
 	
 	//miscellaneous-userconsole
 	public ArrayList<AccountMasterBean> getAccountDetails(int userId) throws BankingException;
+	
+	
+	
+	
+	
 	
 }

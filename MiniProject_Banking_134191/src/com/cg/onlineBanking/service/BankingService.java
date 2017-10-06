@@ -1,30 +1,54 @@
 package com.cg.onlineBanking.service;
 
+import java.util.ArrayList;
+
+import com.cg.onlineBanking.bean.AccountMasterBean;
 import com.cg.onlineBanking.bean.ServiceTrackerBean;
+import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.dao.BankingDAO;
 import com.cg.onlineBanking.dao.IBankingDAO;
 import com.cg.onlineBanking.exception.BankingException;
 
 public class BankingService implements IBankingService {
 
-	IBankingDAO dao ;
+	IBankingDAO bankDAO ;
 	
 	public BankingService() throws BankingException {
-		dao = new BankingDAO();
+		bankDAO= new BankingDAO();
 	}
 
 	@Override
-	public int raiseRequest(ServiceTrackerBean request) throws BankingException {
-
-		return dao.raiseRequest(request);
-	}
-
-	@Override
-	public ServiceTrackerBean trackRequest(int requestId, long accNo)
-			throws BankingException {
+	public UserBean validateCredentials(UserBean user) throws BankingException {
+		UserBean resultUser = new UserBean();
+		ArrayList aList=bankDAO.getUserIdList();
 		
-		return dao.trackRequest(requestId, accNo);
+		if(aList.contains(user.getUserId())){
+			
+			resultUser.setUserId(user.getUserId());
+			UserBean existUser=bankDAO.getUserDetailsOnId(user.getUserId());
+			
+			if(user.getLoginPassword().equals(existUser.getLoginPassword()))
+				{
+					resultUser = existUser;
+					return resultUser;
+				}
+				else{
+					return resultUser;
+				}
+		}
+		else
+		{
+			return resultUser;
+		}
 	}
+
+	@Override
+	public ArrayList validateUserPassword() throws BankingException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 
 }
 

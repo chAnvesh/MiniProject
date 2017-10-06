@@ -23,29 +23,23 @@ public class UserConsole {
 		service = new UserService();
 	}
  
-	public void stop(){
-		System.out.println("Bye");
-	}
 	public boolean start() {
 		
 		boolean res=true;
-		/*System.out.println("Running succesfully");
-		System.out.println(user);
-		*/
 		Scanner sc=new Scanner(System.in);
 		int choice;
 		boolean flag = false;
+		
 		int exitChoice=0;
+
 		// all variables
-		//for requests & tracking
+			//for requests & tracking
 		long accNo=0;
 		int serviceId = 0;
 		String desc = null;
 		String reqDate = null;
 		ArrayList<ServiceTrackerBean> beanList = new ArrayList<>();
 		ServiceTrackerBean bean;
-		//
-		
 		
 		System.out.println("Welcome to ABC Banking Services");
 		System.out.println("Your account details are as follows:");
@@ -58,9 +52,6 @@ public class UserConsole {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		/*System.out.println("Please enter the account number to handle operations.");
-		long accNo = sc.nextLong();*/
 		
 		do {
 			System.out.println("1.View statements");
@@ -100,13 +91,10 @@ public class UserConsole {
 					System.out.println("Enter Date");
 					reqDate = sc.next();
 					
-					
 					DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 					LocalDate req = LocalDate.parse(reqDate, format);
 					//convert reqDate to LocalDate type
 					bean = new ServiceTrackerBean(desc,req,accNo);
-					//bean.setAccNo(123);
-					//service = new BankingService();
 					serviceId = service.raiseRequest(bean);
 					
 				} catch (BankingException e) {
@@ -165,6 +153,7 @@ public class UserConsole {
 						try {
 							System.out.println("Enter your Account No");
 							accNo = sc.nextLong();
+							
 							beanList = service.trackRequest(serviceId, accNo);
 							
 							for(ServiceTrackerBean list:beanList){
@@ -191,6 +180,123 @@ public class UserConsole {
 			}
 			
 			case 5:{
+				int accType=0,accNumber=0,benefAccNum=0,chooseBeneficiary=0,transAmount=0;
+				String benefName=null,transPassword=null;
+				System.out.println("please select the option");
+				
+				System.out.println("1.To Other Accounts");
+				System.out.println("2.To self Accounts");
+				
+				accType=sc.nextInt();
+				
+				switch(accType)
+				{
+				case 1:{
+					System.out.println("Your Availablee Accounts");
+					ArrayList<Integer>accSelflist= new ArrayList<>();
+					//getAccountNoList method call
+					
+					System.out.println("Please Enter Your Account Number");
+					accNumber=sc.nextInt();
+					
+					System.out.println("List of benefitiery Account Numbers");
+					
+					//showPayeeList method call
+					
+					System.out.println("select from the options");
+					
+					System.out.println("1.Add beneficiarry");
+					
+										
+					System.out.println("2.Enter Account Number Of Beneficiary");
+					
+					chooseBeneficiary =sc.nextInt();
+							
+					if(chooseBeneficiary==1)
+					{
+						System.out.println("Enter Beneficiary Account Number");
+						benefAccNum=sc.nextInt();
+						
+						System.out.println("Enter Nick Name Of Beneficiary");
+						benefName=sc.next();
+						
+						//addPayee method call
+						//validatePayeeAccountNo method call
+						
+					}
+					else if(chooseBeneficiary==2)
+					{
+						System.out.println("Please Enter the amount For Transaction");
+						
+						transAmount=sc.nextInt();
+						
+						//validateBalance method call
+						
+						System.out.println("Please Enter Your Transaction Password");
+						
+						//validateTransPassword method call
+						
+						transPassword=sc.next();
+						
+						//addTrans method call
+						
+						
+								
+					}
+					else
+					{
+						System.out.println("please Enter Valid Option");
+						
+					}
+					
+				}
+				case 2:
+				{
+					System.out.println("Your Availablee Accounts");
+					ArrayList<Integer>accSelflist= new ArrayList<>();
+					//getAccountNoList method call
+					
+					System.out.println("Please Enter Your Account Number");
+					
+					accNumber=sc.nextInt();
+					
+					//comparing with existing accounts
+					
+					System.out.println("Please Enter the amount For Transaction");
+					
+					transAmount=sc.nextInt();
+					
+					//validateBalance method call
+					
+					System.out.println("Please Enter Your Transaction Password");
+					
+					//validateTransPassword method call
+					
+					transPassword=sc.next();
+					
+					//addTrans method call
+					break;
+				}
+				}
+					
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				
 				break;
 			}

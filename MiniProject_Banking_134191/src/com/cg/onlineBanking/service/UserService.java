@@ -16,40 +16,6 @@ public class UserService implements IUserService {
 	public UserService() {
 		userDAO = new UserDAO();
 	}
-	
-	//Validation of credentials
-	@Override
-	public UserBean validateCredentials(UserBean user) throws BankingException {
-		UserBean resultUser = new UserBean();
-		ArrayList aList=userDAO.getUserIdList();
-		
-		if(aList.contains(user.getUserId())){
-			
-			resultUser.setUserId(user.getUserId());
-			UserBean existUser=userDAO.getUserDetailsOnId(user.getUserId());
-			
-			if(user.getLoginPassword().equals(existUser.getLoginPassword()))
-				{
-					resultUser = existUser;
-					return resultUser;
-				}
-				else{
-					return resultUser;
-				}
-		}
-		else
-		{
-			return resultUser;
-		}
-		
-	}
-
-
-	@Override
-	public ArrayList validateUserPassword() throws BankingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	//Changing Password
 	@Override

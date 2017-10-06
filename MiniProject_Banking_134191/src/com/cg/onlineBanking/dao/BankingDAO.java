@@ -5,8 +5,11 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import com.cg.onlineBanking.bean.ServiceTrackerBean;
+import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.exception.BankingException;
 import com.cg.onlineBanking.util.ConnectionUtil;
 
@@ -21,80 +24,53 @@ public class BankingDAO implements IBankingDAO{
 		
 	}
 
-	//Service Tracking Methods
 	@Override
-	public int raiseRequest(ServiceTrackerBean request) throws BankingException {
-		
-		String qry = "INSERT INTO Service_Tracker VALUES(?,?,?,?,?)";
-		int recsAffected=0;
-		int serviceId = 0;
-		try(PreparedStatement ps = connect.prepareStatement(qry);) {
+	public ArrayList getUserIdList() throws BankingException {
+		String qry="select user_Id from user_table";
+		ArrayList userList;
+		try {
+			Statement st=connect.createStatement();
+			userList = new ArrayList();
+			ResultSet rs=st.executeQuery(qry);
 			
-			ps.setString(1, request.getDescription());
-			ps.setLong(2, request.getAccNo());
-			
-			Date sql = Date.valueOf(request.getRaisedDate());
-			ps.setDate(3, sql);
-			ps.setString(4, "OPEN");
-			
-			recsAffected = ps.executeUpdate();
+			while(rs.next()){
+				userList.add(rs.getInt("user_Id"));
+				
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			throw new BankingException("Unable to raise request"+e.getMessage());
+			throw new BankingException("unable to retrieve userId List",e);
 		}
 		
-		return (recsAffected==1) ? serviceId:0;
-	}
-	
-	private int getRequestId() throws BankingException {
-		int requestId = 0;
-		String sql = "SELECT REQUEST_SEQ.NEXTVAL FROM DUAL";
-		try(PreparedStatement pstmt= connect.prepareStatement(sql);)
-		{
-				ResultSet res = pstmt.executeQuery();
-				if(res.next())
-				{
-					requestId = res.getInt(1);
-				}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw new BankingException("Unable to generate Request ID"+e.getMessage());
-		}
-		
-		return requestId;
+		return userList;
 	}
 
 	@Override
-	public ServiceTrackerBean trackRequest(int requestId,long accNo)
-			throws BankingException {
-		
-		String qry = "SELECT * FROM Service_Tracker where Service_id=? OR Account_id=?";
-		ServiceTrackerBean service=null;
-		ResultSet rs;
-		
-		try(PreparedStatement ps = connect.prepareStatement(qry);) {
+	public UserBean getUserDetailsOnId(int userId) throws BankingException {
+		String qry="select * from user_table where user_id=?";
+		UserBean bean=null;
+		try {
+			PreparedStatement st=connect.prepareStatement(qry);
+			st.setInt(1, userId);
+			ResultSet rs=st.executeQuery();
 			
-			ps.setInt(1, requestId);
-			ps.setLong(2, accNo);
-			
-			rs = ps.executeQuery();
-			if(rs.next()){
+			while(rs.next()){
+				bean=new UserBean();
 				
-				service = new ServiceTrackerBean();
-				service.setServiceId(rs.getInt(1));
-				service.setDescription(rs.getString(2));
-				service.setAccNo((rs.getLong(3)));
-				service.setRaisedDate(rs.getDate(4).toLocalDate());
-				service.setStatus(rs.getString(5));
+				bean.setLockStatus(rs.getString("lock_status"));
+				bean.setLoginPassword(rs.getString("login_password"));
+				bean.setSecretQstn(rs.getString("secret_question"));
+				bean.setUserId(userId);
+				bean.setTransPassword(rs.getString("transaction_Password"));
+				
 			}
-		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			throw new BankingException("Unable to retrieve request status"+e.getMessage());
+			throw new BankingException("unable to retrieve userDetails List",e);
 		}
 		
-		return service;
+		return bean;
 	}
+
 	
-	//End of Service Tracking Methods
 }

@@ -11,9 +11,7 @@ public interface IUserService {
 
 	//Miscellaneous
 	
-	//Validation of Credentials
-	public UserBean validateCredentials(UserBean user) throws BankingException;
-	public ArrayList validateUserPassword() throws BankingException ;
+	
 	
 	public boolean changePassword(String password, int userId) throws BankingException;
 	

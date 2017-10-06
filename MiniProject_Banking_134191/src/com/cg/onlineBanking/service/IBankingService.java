@@ -1,12 +1,15 @@
 package com.cg.onlineBanking.service;
 
+import java.util.ArrayList;
+
 import com.cg.onlineBanking.bean.ServiceTrackerBean;
+import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.exception.BankingException;
 
 public interface IBankingService {
-
-	public int raiseRequest(ServiceTrackerBean request) throws BankingException;
-	public ServiceTrackerBean trackRequest(int requestId,long accNo) throws BankingException;
-
+	
+	//Related to UI alone.
+	public UserBean validateCredentials(UserBean user) throws BankingException;
+	public ArrayList validateUserPassword() throws BankingException ;
 
 }
