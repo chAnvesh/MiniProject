@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.cg.onlineBanking.bean.AccountMasterBean;
 import com.cg.onlineBanking.bean.CustomerBean;
 import com.cg.onlineBanking.bean.ServiceTrackerBean;
+import com.cg.onlineBanking.bean.TransactionBean;
 import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.exception.BankingException;
 import com.cg.onlineBanking.util.ConnectionUtil;
@@ -156,7 +157,7 @@ public class UserDAO implements IUserDAO{
 				service.setServiceId(rs.getInt(1));
 				service.setDescription(rs.getString(2));
 				service.setAccNo((rs.getLong(3)));
-				service.setRaisedDate(rs.getDate(4).toLocalDate());
+				service.setRaisedDate(rs.getDate(4).toLocalDate());      
 				service.setStatus(rs.getString(5));
 				
 				serviceList.add(service);
@@ -171,6 +172,74 @@ public class UserDAO implements IUserDAO{
 		return serviceList;
 	}	
 	////////////////////////////////////////////////////////////////////////////
+	
+	//MiniStatement and detailed statements.
+
+		public ArrayList getMiniTransactionDetails(int accountNo) throws BankingException{
+		
+		ArrayList tList = new ArrayList();
+		String qry = "Select * from (select * from transactions order by DateofTransaction) where rownum<=10 and Account_No= "+ accountNo;
+				try (					
+						Statement stat = connect.createStatement();
+						ResultSet rs = stat.executeQuery(qry);){
+						
+						while(rs.next()){
+							String tDesc = rs.getString(2);
+							Date tDate = rs.getDate(3);
+							String tType = rs.getString(4);
+						    float tAmount = rs.getFloat(5);
+						    long accNo = rs.getLong(6);
+							
+					   tList.add(new TransactionBean(tDesc, tDate, tType, tAmount, accNo));
+					
+						}
+					} catch (SQLException e) {
+						
+						throw new BankingException("Problem in Showing Transactions",e);
+					}
+				
+				    return tList;
+				    
+		     }
+		@Override
+		public ArrayList getDetailedTransactionDetails(int accountNo,LocalDate dt1, LocalDate dt2) throws BankingException {
+			
+			ArrayList tList = new ArrayList();
+			
+		Date sqldt1= Date.valueOf(dt1);
+			Date sqldt2= Date.valueOf(dt2);
+			
+			String qry = "Select * from (select * from transactions order by DateofTransaction) where DateofTransaction between ? and ? and Account_No= ?";
+
+					try (					
+							PreparedStatement stat = connect.prepareStatement(qry);
+							){
+						stat.setDate(1, sqldt1);
+						stat.setDate(2, sqldt2);
+						stat.setInt(3, accountNo);
+						System.out.println("printing...");
+						ResultSet rs = stat.executeQuery();
+						
+							while(rs.next()){
+								String tDesc = rs.getString(2);
+								Date tDate = rs.getDate(3);
+								String tType = rs.getString(4);
+							    float tAmount = rs.getFloat(5);
+							    long accNo = rs.getLong(6);
+								
+							    System.out.println(tDesc + tDate + tType + tAmount);
+						   tList.add(new TransactionBean(tDesc, tDate, tType, tAmount, accNo));
+						
+							}
+						} catch (SQLException e) {
+							
+							throw new BankingException("Problem in Showing Transactions",e);
+						}
+					System.out.println(tList);
+					    return tList;
+					    
+			
+		}
 }
 /*	@Override
 	public UserBean validateUser(int userId) throws BankingException {

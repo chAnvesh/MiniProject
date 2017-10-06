@@ -9,8 +9,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
+
+import com.cg.onlineBanking.bean.AccountMasterBean;
+import com.cg.onlineBanking.bean.CustomerBean;
 import com.cg.onlineBanking.bean.NewUserBean;
 import com.cg.onlineBanking.bean.TransactionBean;
+import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.exception.BankingException;
 import com.cg.onlineBanking.util.ConnectionUtil;
 
@@ -19,7 +23,8 @@ public class AdminDAO implements IAdminDAO {
 	private Connection connect ;
 	private ConnectionUtil util;
 	
-	public AdminDAO() {
+	public AdminDAO() throws BankingException {
+		util = new ConnectionUtil();
 		connect = util.getConnection();
 		
 	}
@@ -73,6 +78,135 @@ public class AdminDAO implements IAdminDAO {
 		return transList;
 	}*/
 	
+	
+	@Override
+	public boolean updateCustomerTable(long accNo, CustomerBean cust) throws BankingException {
+		String qry ="insert into customer values(?, ?, ?, ?,?)" ;
+		
+
+		try(PreparedStatement stat = connect.prepareStatement(qry);){
+		
+			stat.setLong(1,  accNo);
+			stat.setString(2, cust.getCustName());
+			stat.setString(3, cust.getAddress());
+			stat.setString(4, cust.getEmail());
+			stat.setString(5, cust.getPanCard());
+			
+			int recAffected = stat.executeUpdate();
+		
+			}catch(SQLException e){
+				
+				throw new BankingException("Problem in Updating Table",e);
+			}
+		return false;
+			
+		
+		
+	}
+	@Override
+	public long updateAccountMaster(AccountMasterBean acc) throws BankingException {
+		
+		String qry ="insert into account_master values(?, ?, ?, sysdate)" ;
+		//gets accNo from sequence.
+		long accNo = getAccountNo();
+		int recAffected =0;
+		System.out.println();
+		try(PreparedStatement stat = connect.prepareStatement(qry);){
+		
+			//Date dt= Date.valueOf(acc.getDate());
+			stat.setLong(1,  accNo);
+			stat.setString(2, acc.getAccType());
+			stat.setFloat(3,acc.getAccBal());
+			//stat.setDate(4, acc.getDate());
+			
+			recAffected = stat.executeUpdate();
+		
+			}catch(SQLException e){
+				
+				throw new BankingException("Problem in Updating Table",e);
+			}
+		return (recAffected==1) ? accNo:0;
+	}
+	
+	
+	private long getAccountNo() throws BankingException {
+		long accNo=0;
+		
+		String qry = "select account_no_gen.NEXTVAL from DUAL";
+		
+		try (Statement stmt = connect.createStatement();
+				
+				ResultSet rs = stmt.executeQuery(qry);)
+		{
+			if(rs.next()){
+				accNo = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			
+			throw new BankingException("Unable to fetch accounNo",e);
+		}
+		return accNo;
+	}
+
+	@Override
+	public UserBean getUserDetails(int userId)
+			throws BankingException {
+	
+		String qry = "select * from user_table where user_id= ?";
+		UserBean user = null;
+		try (					
+				PreparedStatement stat = connect.prepareStatement(qry);
+				){
+			stat.setInt(1, userId);
+			
+			
+			ResultSet rs = stat.executeQuery();
+			
+				if(rs.next()){
+					Long accNo =rs.getLong(1);
+					int useId = rs.getInt(2);
+					String password = rs.getString(3);
+					String qsn = rs.getString(4);
+				    String transPass = rs.getString(5);
+				   String lockStat = rs.getString(6);
+					
+				   user= new UserBean(accNo, useId, password, qsn, transPass, lockStat);
+			
+				}
+			} catch (SQLException e) {
+				
+				throw new BankingException("Problem in Showing Transactions",e);
+			}
+
+		    return user;
+	}
+	@Override
+	public void updateUsertable(UserBean user, long accNo) throws BankingException{
+		String qry ="insert into user_table values(?, ?, ?, ?, ?,?)" ;
+		
+		System.out.println();
+		try(PreparedStatement stat = connect.prepareStatement(qry);){
+		
+			stat.setLong(1,  accNo);
+			stat.setInt(2, user.getUserId());
+			stat.setString(3, user.getLoginPassword());
+			stat.setString(4, user.getSecretQstn());
+			stat.setString(5, user.getTransPassword());
+			stat.setString(6, user.getLockStatus());
+			
+			int recAffected = stat.executeUpdate();
+		
+			
+			}catch(SQLException e){
+				
+				throw new BankingException("Problem in Updating Table",e);
+			}
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//Transactions methods
 	@Override
 	public ArrayList<TransactionBean> viewDailyTransactions(LocalDate transDate)
 			throws BankingException {

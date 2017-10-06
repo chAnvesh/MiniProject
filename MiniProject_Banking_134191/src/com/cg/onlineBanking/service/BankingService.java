@@ -48,6 +48,13 @@ public class BankingService implements IBankingService {
 		return null;
 	}
 
+	@Override
+	public boolean forgotPassword(int userId, String secretQstn)
+			throws BankingException {
+		// TODO Auto-generated method stub
+		return bankDAO.forgotPassword(userId, secretQstn);
+	}
+
 	
 
 }

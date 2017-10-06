@@ -1,5 +1,6 @@
 package com.cg.onlineBanking.dao;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.cg.onlineBanking.bean.AccountMasterBean;
@@ -20,7 +21,9 @@ public interface IUserDAO {
 	//miscellaneous-userconsole
 	public ArrayList<AccountMasterBean> getAccountDetails(int userId) throws BankingException;
 	
-	
+	//Mini and detailed statements
+	public ArrayList getMiniTransactionDetails(int accountNo) throws BankingException;
+	public ArrayList getDetailedTransactionDetails(int accountNo,LocalDate dt1, LocalDate dt2) throws BankingException;
 	
 	
 	

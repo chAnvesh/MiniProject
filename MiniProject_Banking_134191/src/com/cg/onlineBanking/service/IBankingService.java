@@ -11,5 +11,6 @@ public interface IBankingService {
 	//Related to UI alone.
 	public UserBean validateCredentials(UserBean user) throws BankingException;
 	public ArrayList validateUserPassword() throws BankingException ;
+	boolean forgotPassword(int userId, String secretQstn) throws BankingException;
 
 }

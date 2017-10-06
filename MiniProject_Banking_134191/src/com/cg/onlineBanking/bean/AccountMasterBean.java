@@ -1,6 +1,7 @@
 package com.cg.onlineBanking.bean;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class AccountMasterBean {
 
@@ -58,6 +59,7 @@ public class AccountMasterBean {
 				+ ", accBal=" + accBal + ", date=" + date + "]";
 	}
 
+	
 
 	public AccountMasterBean(long accNo, String accType, long accBal,
 			LocalDate date) {
@@ -66,6 +68,13 @@ public class AccountMasterBean {
 		this.accType = accType;
 		this.accBal = accBal;
 		this.date = date;
+	}
+
+
+	public AccountMasterBean(String accType, long accBal) {
+		super();
+		this.accType = accType;
+		this.accBal = accBal;
 	}
 
 

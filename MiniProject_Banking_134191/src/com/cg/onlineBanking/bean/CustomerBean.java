@@ -12,6 +12,16 @@ public class CustomerBean {
 		// TODO Auto-generated constructor stub
 	}
 
+	public CustomerBean(String custName, String email, String address
+	) {
+		super();
+		this.custName = custName;
+		this.email = email;
+		this.address = address;
+	
+	}
+	
+	
 	public CustomerBean(String custName, String email, String address,
 			String panCard) {
 		super();

@@ -1,5 +1,6 @@
 package com.cg.onlineBanking.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.cg.onlineBanking.bean.AccountMasterBean;
@@ -43,19 +44,20 @@ public class UserService implements IUserService {
 			throws BankingException {
 		return userDAO.trackRequest(requestId, accNo);
 	}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+	@Override
+	public ArrayList getMiniTransactionDetails(int accountNo)
+			throws BankingException {
+		// TODO Auto-generated method stub
+		return userDAO.getMiniTransactionDetails(accountNo);
+	}
+
+	@Override
+	public ArrayList getDetailedTransactionDetails(int accountNo,
+			LocalDate dt1, LocalDate dt2) throws BankingException {
+		// TODO Auto-generated method stub
+		return userDAO.getDetailedTransactionDetails(accountNo, dt1, dt2);
+	}
 		
 		
 		/*	

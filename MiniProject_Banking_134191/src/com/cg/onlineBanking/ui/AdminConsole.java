@@ -3,10 +3,14 @@ package com.cg.onlineBanking.ui;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
+import com.cg.onlineBanking.bean.AccountMasterBean;
+import com.cg.onlineBanking.bean.CustomerBean;
 import com.cg.onlineBanking.bean.NewUserBean;
 import com.cg.onlineBanking.bean.TransactionBean;
+import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.exception.BankingException;
 import com.cg.onlineBanking.service.AdminService;
 import com.cg.onlineBanking.service.IAdminService;
@@ -17,8 +21,15 @@ public class AdminConsole {
 		
 		Scanner sc = new Scanner(System.in);
 		int adminChoice;
-		IAdminService adminService;
+		IAdminService adminService=null;
 		
+		try {
+			adminService = new AdminService();
+		} catch (BankingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//Try to write all the transaction methods in one option and use switch case inside it.
 		System.out.println("Welcome to Adminstrative Console");
 		
 		System.out.println("Please select one of the options");
@@ -32,43 +43,57 @@ public class AdminConsole {
 		
 		switch(adminChoice){
 		
-		/*case 1:{
+		case 1:{
 			System.out.println("Please enter the following required details");
 			
+			//Add proper validations and navigation .
+			
+			int userId;
 			String accountHolderName;
 			String address;
 			String mobileNumber; 
 			String emailId;
 			String accountType;
-			String openingBalance; 
-			String secretQuestion;
-			String secretAnswer;
+			long openingBalance; 
 		
+			System.out.println("Please enter userId: ");
+			userId = sc.nextInt();
 			System.out.println("Please enter your Name: ");
 			accountHolderName = sc.next();
 			System.out.println("Please enter your Address");
 			address= sc.next();
-			System.out.println("Please enter your Mobile Number: ");
-			mobileNumber= sc.next();
+			
 			System.out.println("Please enter your EMail Id: ");
 			emailId = sc.next();
 			System.out.println("Please enter account type: ");
 			accountType = sc.next();
 			System.out.println("Please enter opening balance: ");
-			openingBalance = sc.next();
-			System.out.println("Please enter a Secret Question: ");
-			secretQuestion = sc.next();
-			System.out.println("Please enter Secret Answer: ");
-			secretAnswer = sc.next();
+			openingBalance = sc.nextLong();
 			
-			NewUserBean newUser = new NewUserBean(accountHolderName, address, mobileNumber, emailId, accountType,
-					openingBalance, secretQuestion, secretAnswer);
+			NewUserBean newUser = new NewUserBean(userId,accountHolderName, address, emailId, accountType,
+					openingBalance);
 			
-		}*/
+			//pancard details are not being sent here. make appropriat changes in dao.
+			CustomerBean cust = new CustomerBean(accountHolderName, emailId, address);
+			
+	    	try {
+	    		//adminService = new AdminService();
+				
+	    		//addCustomer method internally has all the updateAccntMaster, updateCustomer, updateUserTable methods.
+	    		//Account no. generation is done by sequence.
+	    		long accNo = adminService.addCustomer(newUser,cust);
+				System.out.println("New Account with A/c No "+accNo+"has been succesfully added");
+			} catch (BankingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	break;
+	    	
+		}
 		
 		case 2:{
 			
-			adminService = new AdminService();
+			
 			ArrayList<TransactionBean> list=null;
 			boolean flag=false;
 			LocalDate date;
@@ -109,7 +134,7 @@ public class AdminConsole {
 		
 			case 3:{
 			
-				adminService = new AdminService();
+				//adminService = new AdminService();
 				boolean monthValid = false;
 				String month ;
 				int year;
@@ -162,7 +187,7 @@ public class AdminConsole {
 				
 			case 4:{
 				
-				adminService = new AdminService();
+				//adminService = new AdminService();
 				ArrayList<TransactionBean> list=new ArrayList<>();
 				int year;
 				do{

@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import com.cg.onlineBanking.bean.AccountMasterBean;
+import com.cg.onlineBanking.bean.CustomerBean;
 import com.cg.onlineBanking.bean.NewUserBean;
 import com.cg.onlineBanking.bean.TransactionBean;
+import com.cg.onlineBanking.bean.UserBean;
 import com.cg.onlineBanking.dao.AdminDAO;
 import com.cg.onlineBanking.dao.IAdminDAO;
 import com.cg.onlineBanking.exception.BankingException;
@@ -14,14 +17,21 @@ public class AdminService implements IAdminService {
 
 	IAdminDAO adminDAO;
 	
-	public AdminService() {
+	public AdminService() throws BankingException {
 		adminDAO = new AdminDAO();
 	}
 	
 	@Override
-	public long addCustomer(NewUserBean newUser) throws BankingException {
-		// TODO Auto-generated method stub
-		return 0;
+	public long addCustomer(NewUserBean newUser,CustomerBean cust) throws BankingException {
+		
+		AccountMasterBean acc = new AccountMasterBean(newUser.getAccountType(), newUser.getOpeningBalance());
+		
+		long accNo = adminDAO.updateAccountMaster(acc);
+		adminDAO.updateCustomerTable(accNo,cust);
+		
+		adminDAO.updateUsertable(adminDAO.getUserDetails(newUser.getUserId()),accNo);
+		
+		return accNo;
 	}
 
 	/*@Override
@@ -66,4 +76,31 @@ public class AdminService implements IAdminService {
 		return adminDAO.viewYearlyTransactions(year);
 	}
 
+	/*@Override
+	public UserBean getUserDetails(int userId) throws BankingException {
+		// TODO Auto-generated method stub
+		return adminDAO.getUserDetails(userId);
+	}
+
+	@Override
+	public void updateUsertable(UserBean user, long accNo)
+			throws BankingException {
+		
+		adminDAO.updateUsertable(user, accNo);
+	}
+
+	@Override
+	public void updateAccountMaster(AccountMasterBean acc)
+			throws BankingException {
+		// TODO Auto-generated method stub
+		adminDAO.updateAccountMaster(acc);
+	}
+
+	@Override
+	public boolean updateCustomerTable(CustomerBean cust)
+			throws BankingException {
+		// TODO Auto-generated method stub
+		return adminDAO.updateCustomerTable(cust);
+	}
+*/
 }

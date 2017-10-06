@@ -12,4 +12,7 @@ public interface IBankingDAO {
 		public ArrayList getUserIdList()  throws BankingException;
 		//public ArrayList validateUserPassword()  throws BankingException;
 		public UserBean getUserDetailsOnId(int userId) throws BankingException;
+		boolean forgotPassword(int userId, String secretQstn) throws BankingException;
+		
+		
 }
