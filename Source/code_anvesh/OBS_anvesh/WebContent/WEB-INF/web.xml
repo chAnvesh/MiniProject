@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>SpringMVC030_CRUD</display-name>
+  <welcome-file-list>
+    <welcome-file>getHomePage.do</welcome-file>
+    
+  </welcome-file-list>
+ 
+  
+  <!-- we need to add contextLoader-Listener which is to load the context
+  		then the listener will make the context ready ie on taking the context value from
+  		context-param -> param-value
+   -->
+  
+  <context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:/BankManagement.xml</param-value>  <!-- change here -->
+	</context-param>
+	<!-- context param is a way to declare constant values to the appln
+		so that without opening the java code the client can change the value if necessary
+		param-name must b contextConfigLocation only 
+		
+		context-param are like global variables n config-param ie init-param are local to servlet
+		
+		listeners are always created first - so appln context is prepared first
+		then filters then servlets
+		listeners r eventhandlers, filters r intercepters, servlets receives req n giv response
+		
+	 -->
+  <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+   <servlet>
+    <servlet-name>spring</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+    	<param-name>contextConfigLocation</param-name>
+    	<param-value>/WEB-INF/config/BankSpringMVC.xml</param-value>
+    </init-param>
+    
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  
+</web-app>

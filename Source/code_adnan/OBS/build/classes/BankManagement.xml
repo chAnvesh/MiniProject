@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+ <context:component-scan base-package="com.cg.onlineBanking.service" />
+ 
+ <context:component-scan base-package="com.cg.onlineBanking.dao" />    
+
+ <context:property-placeholder location="classpath:oracle.properties"/>      <!-- change here -->
+ 
+
+ 
+ <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+	 <property value="${db.driver}" name="driverClassName"/>
+	  <property value="${db.url}" name="url"/> 
+	  <property value="${db.user}" name="username"/> 
+	  <property value="${db.password}" name="password"/>
+</bean>
+	   
+
+
+
+
+  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+          <property name="dataSource" ref="dataSource"/>
+          <property name="packagesToScan" value="com.cg.onlineBanking.bean"/>         <!-- change here -->
+          <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
+          <property name="jpaPropertyMap">
+              <map>
+                  <entry key="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+                  <entry key="hibernate.hbm2ddl.auto" value="update"/>
+              </map>
+          </property>
+   </bean>
+   
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/>     <!-- insert and update data...transaction m anagement is used -->
+
+</beans>
